@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SOFC Brennstoffzelle — Gruppe 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg2: #111827;
+      --bg3: #1a2235;
+      --accent: #00e5c0;
+      --accent2: #ff6b35;
+      --accent3: #5b8ef0;
+      --text: #e8edf5;
+      --muted: #6b7a99;
+      --border: rgba(255,255,255,0.07);
+      --font-mono: 'Space Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === GRID BACKGROUND === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,192,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,192,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === HERO HEADER === */
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 80px 40px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,229,192,0.08);
+      border: 1px solid rgba(0,229,192,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(28px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    h1 span.accent { color: var(--accent); }
+    h1 span.accent2 { color: var(--accent2); }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* Team credits */
+    .team-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .team-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .team-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .chip.highlight {
+      border-color: rgba(91,142,240,0.35);
+      color: #8ab4ff;
+      background: rgba(91,142,240,0.07);
+    }
+
+    /* === DIVIDER === */
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 60px;
+    }
+
+    /* === MAIN SECTION === */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* === ANIMATION CARD === */
+    .anim-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .anim-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3), var(--accent2));
+    }
+
+    .anim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .anim-title-bar {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .anim-body {
+      padding: 32px;
+    }
+
+    /* === SVG ANIMATION STYLES === */
+    @keyframes ionFlow {
+      0% { transform: translateY(0); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateY(-130px); opacity: 0; }
+    }
+    @keyframes electronFlow {
+      0% { transform: translateX(0); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(200px); opacity: 0; }
+    }
+    @keyframes fuelBubble {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 0.85; }
+      100% { transform: translateY(-80px); opacity: 0; }
+    }
+    @keyframes airBubble {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 0.75; }
+      100% { transform: translateY(-80px); opacity: 0; }
+    }
+    @keyframes glow {
+      0%,100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
+    }
+
+    .ion-particle { animation: ionFlow 2.4s ease-in-out infinite; }
+    .ion-particle:nth-child(2) { animation-delay: 0.8s; }
+    .ion-particle:nth-child(3) { animation-delay: 1.6s; }
+
+    .electron-dot { animation: electronFlow 2.4s ease-in-out infinite; }
+    .electron-dot:nth-child(2) { animation-delay: 0.8s; }
+    .electron-dot:nth-child(3) { animation-delay: 1.6s; }
+
+    .fuel-bbl { animation: fuelBubble 2s ease-in infinite; }
+    .fuel-bbl:nth-child(2) { animation-delay: 0.7s; }
+    .fuel-bbl:nth-child(3) { animation-delay: 1.4s; }
+
+    .air-bbl { animation: airBubble 2.2s ease-in infinite; }
+    .air-bbl:nth-child(2) { animation-delay: 0.75s; }
+    .air-bbl:nth-child(3) { animation-delay: 1.5s; }
+
+    .glow-rect { animation: glow 3s ease-in-out infinite; }
+
+    /* === INFO BUTTONS === */
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .step-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-family: var(--font-body);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .step-btn:hover {
+      background: rgba(0,229,192,0.07);
+      border-color: rgba(0,229,192,0.25);
+      color: var(--accent);
+    }
+
+    .step-btn.active {
+      background: rgba(0,229,192,0.1);
+      border-color: rgba(0,229,192,0.4);
+      color: var(--accent);
+    }
+
+    #info-box {
+      font-size: 14px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      min-height: 52px;
+      line-height: 1.7;
+      font-family: var(--font-body);
+      transition: opacity 0.2s;
+    }
+
+    /* === INFO GRID === */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .info-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+
+    .info-card:hover {
+      border-color: rgba(0,229,192,0.2);
+    }
+
+    .info-card .icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .info-card h3 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .info-card .num {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.04);
+    }
+
+
+
+    /* === FOOTER === */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: gap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-left span { color: var(--accent); }
+
+    .footer-right {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+    }
+
+    /* === GLOW ORBS === */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb1 {
+      width: 500px; height: 500px;
+      background: rgba(0,229,192,0.04);
+      top: -100px; left: -100px;
+    }
+
+    .orb2 {
+      width: 400px; height: 400px;
+      background: rgba(91,142,240,0.05);
+      bottom: 100px; right: -50px;
+    }
+
+    @media (max-width: 600px) {
+      header, main, .divider, footer { padding-left: 20px; padding-right: 20px; }
+      h1 { font-size: 28px; }
+      .anim-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="badge">Chemie &amp; Energietechnik · Gruppe 2</div>
+  <h1>
+    Oxidkeramische<br>
+    <span class="accent">Brennstoffzelle</span><br>
+    <span class="accent2">SOFC</span>
+  </h1>
+  <p class="subtitle">
+    Eine Brennstoffzelle erzeugt Strom direkt aus Biogas — ganz ohne Verbrennung.
+    Klicke auf die Schaltflächen unter der Animation, um jeden Schritt einfach erklärt zu bekommen.
+  </p>
+  <div class="team-row">
+    <span class="team-label">Erstellt von</span>
+    <div class="team-chips">
+      <span class="chip highlight">Patrick</span>
+      <span class="chip highlight">Emilio</span>
+      <span class="chip highlight">David</span>
+      <span class="chip">Gruppe 2</span>
+    </div>
+  </div>
+</header>
+
+<div class="divider"><hr/></div>
+
+<main>
+
+  <!-- SECTION LABEL -->
+  <div class="section-label">▶ Interaktive Animation</div>
+
+  <!-- ANIMATION CARD -->
+  <div class="anim-card">
+    <div class="anim-header">
+      <div class="dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="anim-title-bar">sofc_biogas_animation.svg · live</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--accent)">● running</div>
+    </div>
+    <div class="anim-body">
+
+      <!-- SVG ANIMATION -->
+      <svg width="100%" viewBox="0 0 680 520" style="display:block;margin-bottom:24px">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+            <stop id="gh" offset="40%" stop-color="#ff6b35" stop-opacity="0.35"/>
+            <stop id="gc" offset="40%" stop-color="#5b8ef0" stop-opacity="0.3"/>
+          </linearGradient>
+          <linearGradient id="fg1" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#E85D24"/><stop offset="60%" stop-color="#F2A623"/><stop offset="100%" stop-color="#FCDE5A"/>
+          </linearGradient>
+          <linearGradient id="fg2" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#D14520"/><stop offset="50%" stop-color="#EF8B2C"/><stop offset="100%" stop-color="#F9CB42"/>
+          </linearGradient>
+          <clipPath id="tc"><rect x="180" y="55" width="260" height="390" rx="14"/></clipPath>
+        </defs>
+
+        <!-- Temperature gradient fill -->
+        <g clip-path="url(#tc)"><rect x="180" y="55" width="260" height="390" fill="url(#tg)"/></g>
+
+        <!-- Warm glow on hot zone -->
+        <g clip-path="url(#tc)">
+          <rect id="warm-glow" class="glow-rect" x="180" y="55" width="260" height="155" fill="#ff6b35" opacity="0.18"/>
+        </g>
+
+        <!-- Tank shell -->
+        <rect x="180" y="55" width="260" height="390" rx="14" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+        <!-- ANODE -->
+        <rect x="185" y="60" width="88" height="380" rx="8" fill="rgba(255,107,53,0.18)" stroke="rgba(255,107,53,0.4)" stroke-width="0.8"/>
+        <text font-family="'Space Mono',monospace" font-size="13" font-weight="700" fill="#ff6b35" x="229" y="86" text-anchor="middle">Anode</text>
+        <text font-family="'DM Sans',sans-serif" font-size="11" fill="rgba(255,255,255,0.55)" x="229" y="102" text-anchor="middle">Ni/YSZ-Cermet</text>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(255,107,53,0.9)" x="229" y="126" text-anchor="middle">CH₄ + CO₂</text>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(255,107,53,0.7)" x="229" y="142" text-anchor="middle">→ H₂ + CO</text>
+        <rect x="185" y="290" width="88" height="24" rx="4" fill="rgba(255,107,53,0.15)"/>
+        <text font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(255,107,53,0.8)" x="229" y="306" text-anchor="middle">Reformierung</text>
+
+        <!-- ELECTROLYTE -->
+        <rect x="276" y="60" width="88" height="380" rx="0" fill="rgba(91,142,240,0.08)" stroke="rgba(91,142,240,0.3)" stroke-width="0.8" stroke-dasharray="5 3"/>
+        <text font-family="'Space Mono',monospace" font-size="13" font-weight="700" fill="#5b8ef0" x="320" y="86" text-anchor="middle">Elektrolyt</text>
+        <text font-family="'DM Sans',sans-serif" font-size="11" fill="rgba(255,255,255,0.55)" x="320" y="102" text-anchor="middle">YSZ (Zirkonia)</text>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(91,142,240,0.85)" x="320" y="120" text-anchor="middle">O²⁻-Leiter</text>
+        <!-- Ion channel -->
+        <rect x="307" y="170" width="26" height="175" rx="6" fill="rgba(91,142,240,0.1)" stroke="rgba(91,142,240,0.25)" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(91,142,240,0.7)" x="320" y="250" text-anchor="middle">O²⁻</text>
+        <text font-family="'Space Mono',monospace" font-size="12" fill="rgba(91,142,240,0.7)" x="320" y="265" text-anchor="middle">↑</text>
+
+        <!-- Anode/electrolyte glow -->
+        <rect class="glow-rect" x="267" y="80" width="14" height="340" rx="4" fill="#ff6b35" opacity="0.18"/>
+        <!-- Cathode/electrolyte glow -->
+        <rect class="glow-rect" x="363" y="80" width="14" height="340" rx="4" fill="#5b8ef0" opacity="0.18"/>
+
+        <!-- CATHODE -->
+        <rect x="367" y="60" width="88" height="380" rx="8" fill="rgba(91,142,240,0.18)" stroke="rgba(91,142,240,0.4)" stroke-width="0.8"/>
+        <text font-family="'Space Mono',monospace" font-size="13" font-weight="700" fill="#5b8ef0" x="411" y="86" text-anchor="middle">Kathode</text>
+        <text font-family="'DM Sans',sans-serif" font-size="11" fill="rgba(255,255,255,0.55)" x="411" y="102" text-anchor="middle">LSM / LSCF</text>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(91,142,240,0.9)" x="411" y="126" text-anchor="middle">O₂ + 4e⁻</text>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(91,142,240,0.7)" x="411" y="142" text-anchor="middle">→ 2 O²⁻</text>
+
+        <!-- External circuit wire -->
+        <path d="M229 60 L229 22 L450 22 L450 60" fill="none" stroke="#00e5c0" stroke-width="2" stroke-linecap="round"/>
+        <!-- Load box -->
+        <rect x="298" y="6" width="86" height="26" rx="6" fill="rgba(0,229,192,0.1)" stroke="rgba(0,229,192,0.35)" stroke-width="0.8"/>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="#00e5c0" x="341" y="23" text-anchor="middle">⚡ Verbraucher</text>
+
+        <!-- Animated O²⁻ ions -->
+        <g class="ion-particle"><circle cx="320" cy="340" r="7" fill="#5b8ef0" fill-opacity="0.85"/><text font-size="7" fill="#fff" text-anchor="middle" x="320" y="343">O²⁻</text></g>
+        <g class="ion-particle" style="animation-delay:0.8s"><circle cx="320" cy="340" r="7" fill="#5b8ef0" fill-opacity="0.85"/><text font-size="7" fill="#fff" text-anchor="middle" x="320" y="343">O²⁻</text></g>
+        <g class="ion-particle" style="animation-delay:1.6s"><circle cx="320" cy="340" r="7" fill="#5b8ef0" fill-opacity="0.85"/><text font-size="7" fill="#fff" text-anchor="middle" x="320" y="343">O²⁻</text></g>
+
+        <!-- Animated electrons on wire -->
+        <circle class="electron-dot" cx="229" cy="22" r="4" fill="#00e5c0"/>
+        <circle class="electron-dot" cx="229" cy="22" r="4" fill="#00e5c0" style="animation-delay:0.8s"/>
+        <circle class="electron-dot" cx="229" cy="22" r="4" fill="#00e5c0" style="animation-delay:1.6s"/>
+
+        <!-- Biogas inlet -->
+        <rect x="30" y="175" width="130" height="52" rx="8" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.3)" stroke-width="0.5" stroke-dasharray="4 2"/>
+        <text font-family="'Space Mono',monospace" font-size="11" font-weight="700" fill="#ff6b35" x="95" y="197" text-anchor="middle">Biogas</text>
+        <text font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(255,107,53,0.7)" x="95" y="213" text-anchor="middle">CH₄ 55–70 %</text>
+        <text font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(255,107,53,0.7)" x="95" y="226" text-anchor="middle">CO₂ 30–45 %</text>
+        <line x1="160" y1="202" x2="183" y2="202" stroke="#ff6b35" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Fuel bubbles -->
+        <circle class="fuel-bbl" cx="218" cy="370" r="4" fill="#ff6b35" fill-opacity="0.65"/>
+        <circle class="fuel-bbl" cx="234" cy="370" r="3" fill="#ff6b35" fill-opacity="0.55" style="animation-delay:0.7s"/>
+        <circle class="fuel-bbl" cx="248" cy="370" r="4" fill="#ff6b35" fill-opacity="0.6" style="animation-delay:1.4s"/>
+
+        <!-- Air inlet -->
+        <rect x="520" y="175" width="130" height="52" rx="8" fill="rgba(91,142,240,0.07)" stroke="rgba(91,142,240,0.3)" stroke-width="0.5" stroke-dasharray="4 2"/>
+        <text font-family="'Space Mono',monospace" font-size="11" font-weight="700" fill="#5b8ef0" x="585" y="197" text-anchor="middle">Luft (O₂)</text>
+        <text font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(91,142,240,0.7)" x="585" y="213" text-anchor="middle">O₂ wird reduziert</text>
+        <text font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(91,142,240,0.7)" x="585" y="226" text-anchor="middle">an der Kathode</text>
+        <line x1="519" y1="202" x2="456" y2="202" stroke="#5b8ef0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Air bubbles -->
+        <circle class="air-bbl" cx="381" cy="370" r="4" fill="#5b8ef0" fill-opacity="0.65"/>
+        <circle class="air-bbl" cx="397" cy="370" r="3" fill="#5b8ef0" fill-opacity="0.55" style="animation-delay:0.75s"/>
+        <circle class="air-bbl" cx="413" cy="370" r="4" fill="#5b8ef0" fill-opacity="0.6" style="animation-delay:1.5s"/>
+
+        <!-- Flames -->
+        <path d="M200,450Q210,422 215,432Q220,414 226,450Z" fill="url(#fg1)" opacity="0.9"/>
+        <path d="M240,450Q249,420 255,430Q261,412 266,450Z" fill="url(#fg2)" opacity="0.85"/>
+        <path d="M282,450Q290,424 295,434Q300,416 306,450Z" fill="url(#fg1)" opacity="0.9"/>
+        <path d="M320,450Q329,422 334,432Q339,414 345,450Z" fill="url(#fg2)" opacity="0.85"/>
+        <path d="M360,450Q368,424 373,432Q378,416 383,450Z" fill="url(#fg1)" opacity="0.9"/>
+        <rect x="188" y="452" width="272" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+
+        <!-- Exhaust -->
+        <path d="M229 440 L229 490 L95 490" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <rect x="20" y="476" width="118" height="32" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(255,255,255,0.5)" x="79" y="490" text-anchor="middle">Abgas</text>
+        <text font-family="'Space Mono',monospace" font-size="9" fill="rgba(255,255,255,0.35)" x="79" y="502" text-anchor="middle">H₂O + CO₂</text>
+
+        <!-- Waste heat -->
+        <path d="M320 456 L320 490" fill="none" stroke="rgba(255,107,53,0.5)" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arrow)"/>
+        <rect x="263" y="492" width="116" height="26" rx="6" fill="rgba(255,107,53,0.08)" stroke="rgba(255,107,53,0.25)" stroke-width="0.5"/>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="#ff6b35" x="321" y="506" text-anchor="middle">Abwärme / KWK</text>
+
+        <!-- Efficiency badge -->
+        <rect x="550" y="440" width="118" height="40" rx="8" fill="rgba(0,229,192,0.07)" stroke="rgba(0,229,192,0.25)" stroke-width="0.5"/>
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(0,229,192,0.7)" x="609" y="457" text-anchor="middle">Wirkungsgrad</text>
+        <text font-family="'Space Mono',monospace" font-size="11" font-weight="700" fill="#00e5c0" x="609" y="474" text-anchor="middle">el. ~50–65 %</text>
+
+        <!-- Temperature label -->
+        <text font-family="'Space Mono',monospace" font-size="10" fill="rgba(255,255,255,0.25)" x="340" y="515" text-anchor="middle">Betriebstemperatur: 700 – 1000 °C</text>
+      </svg>
+
+      <!-- CONTROLS -->
+      <div class="btn-row">
+        <button class="step-btn active" onclick="showInfo('gesamt',this)">Gesamtprozess</button>
+        <button class="step-btn" onclick="showInfo('reformierung',this)">Reformierung</button>
+        <button class="step-btn" onclick="showInfo('anode',this)">Anode</button>
+        <button class="step-btn" onclick="showInfo('elektrolyt',this)">Elektrolyt</button>
+        <button class="step-btn" onclick="showInfo('kathode',this)">Kathode</button>
+        <button class="step-btn" onclick="showInfo('kwk',this)">KWK / Abwärme</button>
+      </div>
+      <div id="info-box">
+        Die SOFC wandelt Biogas direkt in Strom und Wärme um — ganz ohne Verbrennung. Das Biogas strömt links in die Zelle, Luft rechts. Dazwischen entsteht durch eine chemische Reaktion Strom, der über den äußeren Draht zum Verbraucher fließt. Die Zelle wird dabei so heiß (700–1000 °C), dass kein externer Vorheizer nötig ist.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="section-label">▶ Das Wichtigste auf einen Blick</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <span class="num">01</span>
+      <span class="icon">🌡️</span>
+      <h3>Sehr hohe Temperatur</h3>
+      <p>Die Zelle arbeitet bei 700–1000 °C. Das ist so heiß, dass das Biogas direkt in der Zelle aufgespalten werden kann — kein extra Gerät nötig.</p>
+    </div>
+    <div class="info-card">
+      <span class="num">02</span>
+      <span class="icon">⚡</span>
+      <h3>Hoher Wirkungsgrad</h3>
+      <p>50–65 % des Biogases werden direkt in Strom umgewandelt. Nutzt man auch die Abwärme, steigt die Effizienz auf bis zu 90 %.</p>
+    </div>
+    <div class="info-card">
+      <span class="num">03</span>
+      <span class="icon">🌿</span>
+      <h3>Was ist Biogas?</h3>
+      <p>Biogas besteht zu 55–70 % aus Methan und zu 30–45 % aus Kohlendioxid. Es entsteht z.B. beim Vergären von Gülle oder Biomüll.</p>
+    </div>
+    <div class="info-card">
+      <span class="num">04</span>
+      <span class="icon">🔬</span>
+      <h3>Keramik als Herzstück</h3>
+      <p>Der Elektrolyt ist aus einer speziellen Keramik (YSZ). Sie lässt nur Sauerstoffionen durch — das ist der Trick, der Strom erzeugt.</p>
+    </div>
+  </div>
+
+
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div>Erstellt von <span>Patrick</span>, <span>Emilio</span> &amp; <span>David</span> · Gruppe 2</div>
+    <div style="margin-top:4px;color:rgba(255,255,255,0.2);font-size:11px">Oxidkeramische Brennstoffzelle (SOFC) · Biogas-basiert</div>
+  </div>
+  <div class="footer-right">SOFC · YSZ · Ni/YSZ · LSM/LSCF</div>
+</footer>
+
+<script>
+  const infos = {
+    gesamt: "Die SOFC wandelt Biogas direkt in Strom und Wärme um — ganz ohne Verbrennung. Das Biogas strömt links in die Zelle, Luft rechts. Dazwischen entsteht durch eine chemische Reaktion Strom, der über den äußeren Draht zum Verbraucher fließt. Die Zelle wird dabei so heiß (700–1000 °C), dass kein externer Vorheizer nötig ist.",
+    reformierung: "Biogas besteht hauptsächlich aus Methan (CH₄) und Kohlendioxid (CO₂). In der heißen Anode werden diese Gase zuerst in Wasserstoff und Kohlenmonoxid umgewandelt — das nennt man interne Reformierung. Dieser Schritt passiert ganz von selbst durch die hohe Betriebstemperatur der Zelle, ohne extra Energie.",
+    anode: "Die Anode ist die linke Schicht der Zelle und besteht aus einem Nickel-Keramik-Gemisch (Ni/YSZ). Hier reagiert der Wasserstoff aus dem Biogas mit Sauerstoffionen, die durch den Elektrolyten ankommen. Dabei entstehen Wasserdampf und freie Elektronen — die Elektronen fließen als nutzbarer Strom durch den äußeren Stromkreis.",
+    elektrolyt: "Der Elektrolyt ist die mittlere Schicht und besteht aus Zirkonoxid-Keramik (YSZ). Er lässt nur Sauerstoffionen (O²⁻) durch — von der Kathode zur Anode. Elektronen dürfen nicht hindurch, damit sie den Umweg über den äußeren Stromkreis nehmen müssen. Genau das erzeugt den nutzbaren Strom.",
+    kathode: "Die Kathode ist die rechte Schicht der Zelle. Hier trifft der Sauerstoff aus der Luft ein und nimmt Elektronen auf, die gerade durch den äußeren Stromkreis geflossen sind. Dabei entstehen Sauerstoffionen (O²⁻), die dann durch den Elektrolyten zur Anode wandern — der Kreislauf beginnt von vorne.",
+    kwk: "Die Zelle wird im Betrieb sehr heiß. Diese Abwärme ist wertvoll: Sie kann zum Heizen von Gebäuden oder zur Warmwasserbereitung genutzt werden — das nennt man Kraft-Wärme-Kopplung (KWK). Der elektrische Wirkungsgrad liegt bei 50–65 %, zusammen mit der Wärmenutzung erreicht man bis zu 90 % Gesamteffizienz."
+  };
+
+  function showInfo(key, btn) {
+    document.getElementById('info-box').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('info-box').textContent = infos[key];
+      document.getElementById('info-box').style.opacity = '1';
+    }, 150);
+    document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Thermostat slider
+  const slider = document.getElementById('temp-slider');
+  if (slider) {
+    slider.addEventListener('input', function() {
+      document.getElementById('gh').setAttribute('offset', this.value + '%');
+      document.getElementById('gc').setAttribute('offset', this.value + '%');
+      document.getElementById('temp-label').textContent = this.value + '%';
+    });
+  }
+</script>
+
+</body>
+</html>
